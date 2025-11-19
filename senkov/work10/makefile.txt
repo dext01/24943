@@ -1,0 +1,5 @@
+build:
+	gcc work10.c -o work10
+
+run:
+	./work10 testing.txt
