@@ -7,7 +7,7 @@ int main(int argc, char *argv[])
 {
     if (argc != 2) {
         fprintf(stderr, "Usage: %s <file>\n", argv[0]);
-        fprintf(stderr, "Example: %s testing.txt\n", argv[0]);
+        fprintf(stderr, "Example: %s longfile.txt\n", argv[0]);
         return EXIT_FAILURE;
     }
 
@@ -24,10 +24,11 @@ int main(int argc, char *argv[])
                getpid(), filename);
 
         execlp("cat", "cat", filename, (char *)NULL);
-      
+
         perror("execlp");
         _exit(127);
-    } else {
+    } 
+    else {
         int status;
 
         printf("parent [%d]: created child with pid %d\n",
@@ -39,16 +40,7 @@ int main(int argc, char *argv[])
             return EXIT_FAILURE;
         }
 
-        if (WIFEXITED(status)) {
-            printf("parent: child exited with code %d\n",
-                   WEXITSTATUS(status));
-        } else if (WIFSIGNALED(status)) {
-            printf("parent: child was killed by signal %d\n",
-                   WTERMSIG(status));
-        } else {
-            printf("parent: child finished with unknown status 0x%x\n",
-                   status);
-        }
+        printf("parent: child exit code: %d\n", WEXITSTATUS(status));
         printf("parent: final message AFTER child has finished.\n");
     }
 
