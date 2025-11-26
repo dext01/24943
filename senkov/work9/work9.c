@@ -15,11 +15,10 @@ int main(int argc, char *argv[])
 
     const char *filename = argv[1];
 
-    // 2. НОВАЯ ПРОВЕРКА: Существует ли файл и доступен ли он для чтения?
+    // Существует ли файл и доступен ли он для чтения?
     // F_OK - существует, R_OK - можно читать
     if (access(filename, F_OK | R_OK) == -1) {
         perror("Error: Cannot access file");
-        // Не имеет смысла создавать процесс, если файла нет
         return EXIT_FAILURE;
     }
 
@@ -29,18 +28,17 @@ int main(int argc, char *argv[])
         return EXIT_FAILURE;
     }
 
-    // --- Дочерний процесс ---
+    // Дочерний процесс
     if (pid == 0) {
         printf("child [%d]: running cat for file \"%s\"\n",
                getpid(), filename);
 
         execlp("cat", "cat", filename, (char *)NULL);
 
-        // Сюда попадем только если execlp не сработал (например, нет утилиты cat)
         perror("execlp");
         _exit(127);
     } 
-    // --- Родительский процесс ---
+    // Родительский процесс
     else {
         int status;
 
@@ -53,7 +51,7 @@ int main(int argc, char *argv[])
             return EXIT_FAILURE;
         }
 
-        // 3. НОВАЯ ПРОВЕРКА: Как именно завершился ребенок?
+        // Как именно завершился ребенок?
         
         if (WIFEXITED(status)) {
             // Процесс завершился нормально (return или exit)
