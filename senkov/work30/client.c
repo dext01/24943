@@ -7,7 +7,7 @@
 #include <sys/un.h>
 
 #define SOCKET_PATH "/tmp/uds_socket_30" 
-#define TEXT_TO_SEND "ЭтО КруТой сОКет! пРиВЕт всЕм, КТО любИт яЗык ПРоГРаМмиРОваНИЯ с, И ПредмЕТ опеРАцИОнНые СИСтЕМы!"
+#define TEXT_TO_SEND "Hello World, this is a TeSt MeSsAgE from the Client."
 
 int main() {
     int client_fd;
@@ -15,23 +15,22 @@ int main() {
     char *text = TEXT_TO_SEND;
     ssize_t bytes_sent;
 
+    // 1. Создание сокета
     if ((client_fd = socket(AF_UNIX, SOCK_STREAM, 0)) == -1) {
-        perror("Ошибка при создании сокета");
+        perror("Socket creation failed");
         exit(EXIT_FAILURE);
     }
 
     // Заполнение структуры адреса Сервера
-    memset(&server_addr, 0, sizeof(struct sockaddr_un));
+    memset(&server_addr, 0, sizeof(server_addr));
     server_addr.sun_family = AF_UNIX;
-    
-    // Копируем путь к файлу сокета
     strncpy(server_addr.sun_path, SOCKET_PATH, sizeof(server_addr.sun_path) - 1);
 
     printf("Клиент: Попытка подключения к UDS: %s\n", SOCKET_PATH);
 
     // 2. Установление соединения
-    if (connect(client_fd, (struct sockaddr*)&server_addr, sizeof(struct sockaddr_un)) == -1) {
-        perror("Ошибка при подключении к Серверу. Убедитесь, что Сервер запущен!");
+    if (connect(client_fd, (struct sockaddr*)&server_addr, sizeof(server_addr)) == -1) {
+        perror("Connection failed. Is the Server running?");
         close(client_fd);
         exit(EXIT_FAILURE);
     }
@@ -43,14 +42,13 @@ int main() {
     bytes_sent = send(client_fd, text, strlen(text) + 1, 0); 
     
     if (bytes_sent == -1) {
-        perror("Ошибка при отправке данных");
+        perror("Send failed");
     } else {
         printf("Клиент: Отправлено %ld байт.\n", bytes_sent);
         printf("Клиент: Отправленный текст: \"%s\"\n", text);
     }
 
     // 4. Разрыв соединения и завершение
-    // Закрытие сокета клиентом уведомит сервер о разрыве соединения
     close(client_fd);
     printf("Клиент: Соединение закрыто. Клиент завершает работу.\n");
 
