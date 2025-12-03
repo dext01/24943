@@ -12,11 +12,9 @@
 
 // Функция для перевода строки в верхний регистр
 void to_upper_case(char *str) {
-    int i; // <-- Исправлено: Объявление в начале функции
+    int i;
     if (str == NULL) return;
-    
-    // Цикл for без объявления переменной внутри
-    for (i = 0; str[i] != '\0'; i++) { 
+        for (i = 0; str[i] != '\0'; i++) { 
         str[i] = (char)toupper((unsigned char)str[i]);
     }
 }
@@ -27,7 +25,6 @@ int main() {
     char buffer[BUFFER_SIZE];
     ssize_t bytes_read;
 
-    // --- Критические шаги для стабильности ---
     // 1. Удаление старого файла сокета для предотвращения ошибки "Address already in use"
     unlink(SOCKET_PATH); 
 
