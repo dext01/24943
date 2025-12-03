@@ -7,7 +7,7 @@
 #include <sys/un.h>
 
 #define SOCKET_PATH "/tmp/uds_socket_30" 
-#define TEXT_TO_SEND "ЭтО КруТой сОКет! пРиВЕт всЕм, КТО любИт яЗык ПРоГРаМмиРОваНИЯ с, И ПредмЕТ опеРАцИОнНые СИСтЕМы!"
+#define TEXT_TO_SEND "ThIs CoOl SoCkeT! HeLlO EvEryOnE wHo LoVeS ThE c PrOgRaMmInG lAnGuAgE, aNd ThE oPeRaTiNg SyStEmS sUbJeCt!"
 
 int main() {
     int client_fd;
