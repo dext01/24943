@@ -12,8 +12,11 @@
 
 // Функция для перевода строки в верхний регистр
 void to_upper_case(char *str) {
+    int i; // <-- Исправлено: Объявление в начале функции
     if (str == NULL) return;
-    for (int i = 0; str[i] != '\0'; i++) {
+    
+    // Цикл for без объявления переменной внутри
+    for (i = 0; str[i] != '\0'; i++) { 
         str[i] = (char)toupper((unsigned char)str[i]);
     }
 }
