@@ -2,11 +2,12 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
-#include <errno.h> // Для кодов ошибок
+#include <sys/types.h>
+#include <errno.h>
 
 int main(int argc, char *argv[])
 {
-    // 1. Проверка количества аргументов
+    // Проверка количества аргументов
     if (argc != 2) {
         fprintf(stderr, "Usage: %s <file>\n", argv[0]);
         fprintf(stderr, "Example: %s longfile.txt\n", argv[0]);
@@ -15,8 +16,7 @@ int main(int argc, char *argv[])
 
     const char *filename = argv[1];
 
-    // Существует ли файл и доступен ли он для чтения?
-    // F_OK - существует, R_OK - можно читать
+    // Проверка доступности файла
     if (access(filename, F_OK | R_OK) == -1) {
         perror("Error: Cannot access file");
         return EXIT_FAILURE;
@@ -41,20 +41,17 @@ int main(int argc, char *argv[])
     // Родительский процесс
     else {
         int status;
+        pid_t ret;
 
-        printf("parent [%d]: created child with pid %d\n",
-               getpid(), pid);
+        printf("parent [%d]: created child with pid %ld\n",
+               getpid(), (long)pid);
         printf("parent: waiting for child to finish...\n");
 
-        if (waitpid(pid, &status, 0) == -1) {
-            perror("waitpid");
-            return EXIT_FAILURE;
-        }
+        ret = wait(&status);
+        printf("parent: wait's return value: %ld\n", (long)ret);
 
-        // Как именно завершился ребенок?
-        
+        // Детальный анализ завершения
         if (WIFEXITED(status)) {
-            // Процесс завершился нормально (return или exit)
             int exit_code = WEXITSTATUS(status);
             printf("parent: child exited normally with code: %d\n", exit_code);
             
@@ -63,15 +60,14 @@ int main(int argc, char *argv[])
             }
         } 
         else if (WIFSIGNALED(status)) {
-            // Процесс был убит сигналом (например, kill -9)
             printf("parent: child was killed by signal: %d\n", WTERMSIG(status));
         } 
         else {
-            // Прочие редкие случаи (например, остановлен ptrace)
             printf("parent: child finished specifically (status: %d)\n", status);
         }
 
         printf("parent: final message AFTER child has finished.\n");
+        exit(0);
     }
 
     return 0;
