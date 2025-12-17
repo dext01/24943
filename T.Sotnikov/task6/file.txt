@@ -1,4 +1,0 @@
-str 1
-stroka 2
-
-stroka 4 
