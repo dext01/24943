@@ -1,4 +1,0 @@
-hello world
-apple
-
-123
